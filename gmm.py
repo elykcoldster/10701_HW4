@@ -6,7 +6,7 @@ def load_data(filename='X.txt'):
     X = np.loadtxt(filename)
     return (X)
 
-data = load_data()
+data = load_data('X_new.txt')
 
 gmm = GaussianMixture(n_components=3, covariance_type='diag', tol=1e-3, init_params='random', random_state=123)
 
