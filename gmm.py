@@ -8,7 +8,7 @@ def load_data(filename='X.txt'):
 
 data = load_data('X_new.txt')
 
-gmm = GaussianMixture(n_components=3, covariance_type='diag', tol=1e-3, init_params='random', random_state=123)
+gmm = GaussianMixture(n_components=3, covariance_type='spherical', tol=1e-3, init_params='random', random_state=123)
 
 gmm.fit(data)
 
