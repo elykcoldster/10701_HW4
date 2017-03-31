@@ -19,22 +19,34 @@ predictions = gmm.predict(data)
 
 pi = (len(np.where(predictions == 0)[0])/3000, len(np.where(predictions == 1)[0])/3000, len(np.where(predictions == 2)[0])/3000)
 
-#means = np.zeros((3,5))
-random_init = np.random.randint(0, high=data.shape[0], size=3)
-print(random_init)
-means = data[random_init]
 covariances = gmm.covariances_
 
-for n in range(0,10):
+thresh = 0.001
+delta = np.inf
+iters = 0
+
+means = []
+
+random_init = np.random.randint(0, high=data.shape[0], size=3)
+means.append(data[random_init])
+
+while delta > thresh:
 	psums = np.zeros(3)
 	for i in range(0,3):
 		for x in data:
-			psums[i] += pi[i]*g(x, means[i,:], covariances[i])
+			psums[i] += pi[i]*g(x, means[iters][i,:], covariances[i])
 
 	musums = np.zeros((3,5))
 	for i in range(0,3):
 		for x in data:
-			musums[i,:] += x * pi[i]*g(x, means[i,:], covariances[i]) / psums[i]
-	means = musums
-print(means)
+			musums[i,:] += x * pi[i]*g(x, means[iters][i,:], covariances[i]) / psums[i]
+
+	means.append(musums)
+	iters += 1
+	if iters > 0:
+		means_now = means[iters]
+		means_prev = means[iters - 1]
+		del_means = abs(means_now - means_prev)
+		delta = np.max(del_means)
+print(means[iters])
 print(gmm.means_)
