@@ -30,10 +30,12 @@ delta = np.inf
 iters = 0
 
 means = []
+pis = []
 
 np.random.seed(123)
 random_init = np.random.randint(0, high=data.shape[0], size=3)
 means.append(data[random_init])
+pis.append(np.copy(pi))
 
 while delta > thresh:
 	r = np.zeros((data.shape[0], 3))
@@ -59,12 +61,20 @@ while delta > thresh:
 		pi[k] = psums[k]/data.shape[0]
 
 	means.append(mus)
+	pis.append(np.copy(pi))
+
 	iters += 1
 	if iters > 0:
 		means_now = means[iters]
 		means_prev = means[iters - 1]
+
+		pis_now = pis[iters]
+		pis_prev = pis[iters - 1]
+
 		del_means = abs(means_now - means_prev)
-		delta = np.max(del_means)
+		del_pis = abs(pis_now - pis_prev)
+
+		delta = max(np.max(del_pis), np.max(del_means))
 print('Means')
 print(means[iters])
 print('Class probabilities')
